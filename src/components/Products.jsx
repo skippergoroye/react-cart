@@ -1,8 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { CartContext } from "../context/cart";
+import Cart from './Cart'
+
+
+
 
 export default function Products() {
   const [products, setProducts] = useState([]);
+  const { cartItems, addToCart} = useContext(CartContext)
+  const [showModal, setShowModal] = useState(false)
   console.log(products);
+
+
+
+  const toggle = () => {
+    setShowModal(!showModal)
+  }
 
   async function getProducts() {
     const response = await fetch("https://dummyjson.com/products"); // fetch the product 
@@ -20,6 +33,8 @@ export default function Products() {
         <h1 className="text-2xl uppercase font-bold mt-10 text-center mb-10">
           Shop
         </h1>
+        {!showModal && <button className='px-4 py-2 bg-gray-800 text-white text-xs font-bold uppercase rounded hover:bg-gray-700 focus:outline-none focus:bg-gray-700'
+  onClick={toggle}>Cart ({cartItems.length})</button>}
       </div>
       <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 px-10 gap-4">
         {products.map((product) => (
@@ -40,13 +55,14 @@ export default function Products() {
               <p className="mt-2 text-gray-600">${product.price}</p>
             </div>
             <div className="mt-6 flex justify-between items-center">
-              <button className="px-4 py-2 bg-gray-800 text-white text-xs font-bold uppercase rounded hover:bg-gray-700 focus:outline-none focus:bg-gray-700">
+              <button onClick={() => addToCart(product)} className="px-4 py-2 bg-gray-800 text-white text-xs font-bold uppercase rounded hover:bg-gray-700 focus:outline-none focus:bg-gray-700">
                 Add to cart
               </button>
             </div>
           </div>
         ))}
       </div>
+        <Cart showModal={showModal} toggle={toggle} />
     </div>
   );
 }

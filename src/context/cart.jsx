@@ -1,17 +1,20 @@
 import { createContext, useState, useEffect } from "react";
 
-const CartContext = createContext();
+export const CartContext = createContext();
+
+
 
 export default function CartProvider({ children }) {
   const [cartItems, setCartItems] = useState(
     localStorage.getItem("cartItems")
       ? JSON.parse(localStorage.getItem("cartItems"))
       : []
-  );
+    );
 
 
 
 //   const [cartItems, setCartItems] = useState("hello");
+
 
   const addToCart = (item) => {
     const isItemInCart = cartItems.find((cartItem) => cartItem.id === item.id);
@@ -29,6 +32,8 @@ export default function CartProvider({ children }) {
     }
   };
 
+
+
   const removeFromCart = (item) => {
     const isItemInCart = cartItems.find((cartItem) => cartItem.id === item.id);
 
@@ -45,9 +50,13 @@ export default function CartProvider({ children }) {
     }
   };
 
+
+
   const clearCart = () => {
     setCartItems([]);
   };
+
+
 
   const getCartTotal = () => {
     return cartItems.reduce(
@@ -55,17 +64,28 @@ export default function CartProvider({ children }) {
       0
     );
   };
+  
 
+
+
+  // To set the cartItem to a string in the browser
   useEffect(() => {
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
   }, [cartItems]);
 
+
+
+
+
+  // To convert the cartItem to an object in the project
   useEffect(() => {
     const cartItems = localStorage.getItem("cartItems");
     if (cartItems) {
       setCartItems(JSON.parse(cartItems));
     }
   }, []);
+
+
 
   return (
     <CartContext.Provider
